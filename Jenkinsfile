@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git credentialsId: "${GIT_CREDENTIALS_ID}", url: 'https://github.com/jinkasaru123/python-webapp.git'
+                git credentialsId: "${GIT_CREDENTIALS_ID}", url: 'https://github.com/jinkasaru123/Flaskapp.git'
             }
         }
 
