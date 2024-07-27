@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
-        GIT_CREDENTIALS_ID = 'github-credentials'
-        DOCKER_CREDENTIALS_ID = '5a2be959-9281-46bf-8699-00c708e95f9c'
+        GIT_CREDENTIALS_ID = 'github-credentials' // GitHub credentials ID
+        DOCKER_CREDENTIALS_ID = '5a2be959-9281-46bf-8699-00c708e95f9c' // Docker Hub credentials ID
+        DOCKER_BUILDKIT = '1'
     }
 
     stages {
@@ -16,7 +17,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    docker.build('jinkasaru123/python-webapp')
+                    docker.build('jinkasaru123/flaskapp')
                 }
             }
         }
@@ -27,13 +28,18 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
+        stage('Push to Docker Hub') {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
-                        docker.image('jinkasaru123/python-webapp').push('latest')
+                        docker.image('jinkasaru123/flaskapp').push('latest')
                     }
                 }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
                 kubernetesDeploy configs: 'k8s-deployment.yaml', kubeConfig: [path: '']
             }
         }
