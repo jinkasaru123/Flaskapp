@@ -14,6 +14,12 @@ pipeline {
             }
         }
 
+        stage('Setup Buildx') {
+            steps {
+                sh 'docker buildx create --use'
+            }
+        }
+
         stage('Build') {
             steps {
                 script {
